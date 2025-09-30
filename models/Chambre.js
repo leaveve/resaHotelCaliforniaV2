@@ -3,7 +3,7 @@ class Chambre {
     constructor(data) {
         this.id = data.id;
         this.numero = data.numero;
-        this.capacite = data.capacite;
+        this.capacite = data.capacite; 
     }
 
     // Récupérer toutes les chambres
