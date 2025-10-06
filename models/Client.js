@@ -8,7 +8,7 @@ class Client {
         this.prenom = data.prenom;
         this.email = data.email;
         this.telephone = data.telephone;
-        this.adresse = data.adresse;
+        this.nombre_personnes = data.nombre_personnes;
     }
 
     // Récupérer tous les clients
@@ -35,8 +35,8 @@ class Client {
     static async create(clientData) {
         try {
             const [result] = await db.execute(
-                'INSERT INTO clients (nom, prenom, email, telephone, adresse) VALUES (?, ?, ?, ?, ?)',
-                [clientData.nom, clientData.prenom, clientData.email, clientData.telephone, clientData.adresse]
+                'INSERT INTO clients (nom, prenom, email, telephone, nombre_personnes) VALUES (?, ?, ?, ?, ?)',
+                [clientData.nom, clientData.prenom, clientData.email, clientData.telephone, clientData.nombre_personnes]
             );
             return result.insertId;
         } catch (error) {
@@ -51,8 +51,8 @@ class Client {
     static async update(id, clientData) {
         try {
             const [result] = await db.execute(
-                'UPDATE clients SET nom = ?, prenom = ?, email = ?, telephone = ?, adresse = ? WHERE id = ?',
-                [clientData.nom, clientData.prenom, clientData.email, clientData.telephone, clientData.adresse, id]
+                'UPDATE clients SET nom = ?, prenom = ?, email = ?, telephone = ?, nombre_personnes = ? WHERE id = ?',
+                [clientData.nom, clientData.prenom, clientData.email, clientData.telephone, clientData.nombre_personnes, id]
             );
             
             if (result.affectedRows === 0) {
