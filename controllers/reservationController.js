@@ -1,29 +1,29 @@
-const db = require('../config/database'); // your db connection module
+import db from '../models/connexion.js'; // Connexion à ta base
 
-// Format date like PHP formatDate()
+// Fonction de formatage de date (comme PHP)
 function formatDate(date) {
     return new Date(date).toLocaleDateString('fr-FR');
 }
 
-exports.getReservations = async (req, res) => {
+// Contrôleur pour récupérer toutes les réservations
+export const getReservations = async (req, res) => {
     try {
-        const [rows] = await db.query(`
-            SELECT r.id, r.date_arrivee, r.date_depart,
-            c.nom AS client_nom, c.telephone AS client_telephone, c.email AS client_email,
-            c.nombre_personnes,
-            ch.numero AS chambre_numero, ch.capacite AS chambre_capacite
+        const [rows] = await db.execute(`
+            SELECT r.id, r.date_arrivee, r.date_depart, r.nombre_personnes,
+                   c.nom AS client_nom, c.telephone AS client_telephone, c.email AS client_email,
+                   ch.numero AS chambre_numero, ch.capacite AS chambre_capacite
             FROM reservations r
-            JOIN clients c ON r.client_id = c.id
+            JOIN clients c ON r.id_client = c.id
             JOIN chambres ch ON r.chambre_id = ch.id
             ORDER BY r.date_arrivee DESC
         `);
 
         const today = new Date().toISOString().split('T')[0];
 
-        // Add statut logic like PHP
         const reservations = rows.map(r => {
             let statut = "À venir";
             let statut_class = "";
+
             if (r.date_depart < today) {
                 statut = "Terminée";
                 statut_class = "status-past";
@@ -31,6 +31,7 @@ exports.getReservations = async (req, res) => {
                 statut = "En cours";
                 statut_class = "status-active";
             }
+
             return {
                 ...r,
                 date_arrivee: formatDate(r.date_arrivee),
@@ -41,9 +42,8 @@ exports.getReservations = async (req, res) => {
         });
 
         res.render('reservations/index', { reservations });
-
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error('Erreur lors du chargement des réservations :', error);
         res.status(500).send("Erreur serveur");
     }
 };
