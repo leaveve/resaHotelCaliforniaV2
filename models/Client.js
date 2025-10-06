@@ -3,9 +3,9 @@ import db from './connexion.js';
 
 class Client {
     constructor(data) {
-        this.id = data.id;
-        this.nom = data.nom;
+        this.id_client = data.id_client;
         this.prenom = data.prenom;
+        this.nom = data.nom;
         this.email = data.email;
         this.telephone = data.telephone;
         this.nombre_personnes = data.nombre_personnes;
@@ -24,7 +24,7 @@ class Client {
     // Récupérer un client par ID
     static async findById(id) {
         try {
-            const [rows] = await db.execute('SELECT * FROM clients WHERE id = ?', [id]);
+            const [rows] = await db.execute('SELECT * FROM clients WHERE id_client = ?', [id]);
             return rows.length > 0 ? new Client(rows[0]) : null;
         } catch (error) {
             throw new Error('Erreur lors de la récupération du client: ' + error.message);
@@ -35,8 +35,8 @@ class Client {
     static async create(clientData) {
         try {
             const [result] = await db.execute(
-                'INSERT INTO clients (nom, prenom, email, telephone, nombre_personnes) VALUES (?, ?, ?, ?, ?)',
-                [clientData.nom, clientData.prenom, clientData.email, clientData.telephone, clientData.nombre_personnes]
+                'INSERT INTO clients (prenom, nom, email, telephone, nombre_personnes) VALUES (?, ?, ?, ?, ?)',
+                [clientData.prenom, clientData.nom, clientData.email, clientData.telephone, clientData.nombre_personnes]
             );
             return result.insertId;
         } catch (error) {
@@ -51,8 +51,8 @@ class Client {
     static async update(id, clientData) {
         try {
             const [result] = await db.execute(
-                'UPDATE clients SET nom = ?, prenom = ?, email = ?, telephone = ?, nombre_personnes = ? WHERE id = ?',
-                [clientData.nom, clientData.prenom, clientData.email, clientData.telephone, clientData.nombre_personnes, id]
+                'UPDATE clients SET prenom = ?, nom = ?, email = ?, telephone = ?, nombre_personnes = ? WHERE id_client = ?',
+                [clientData.prenom, clientData.nom, clientData.email, clientData.telephone, clientData.nombre_personnes, id]
             );
             
             if (result.affectedRows === 0) {
@@ -81,7 +81,7 @@ class Client {
                 throw new Error('Impossible de supprimer le client, des réservations sont associées');
             }
 
-            await db.execute('DELETE FROM clients WHERE id = ?', [id]);
+            await db.execute('DELETE FROM clients WHERE id_client = ?', [id]);
             return true;
         } catch (error) {
             throw new Error('Erreur lors de la suppression du client: ' + error.message);
@@ -96,7 +96,7 @@ class Client {
 
             // Exclure l'ID actuel lors de la mise à jour
             if (excludeId) {
-                query += ' AND id != ?';
+                query += ' AND id_client != ?';
                 params.push(excludeId);
             }
 

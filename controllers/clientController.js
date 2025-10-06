@@ -28,19 +28,15 @@ class ClientController {
     // Traiter la création d'un client
     static async store(req, res) {
         try {
-            // Récupérer les erreurs de validation d'express-validator
             const validatorErrors = validationResult(req);
             const errors = [];
 
-            // Convertir les erreurs express-validator au format attendu
             if (!validatorErrors.isEmpty()) {
                 validatorErrors.array().forEach(error => {
                     errors.push({ msg: error.msg });
                 });
             }
 
-            // Validation manuelle supplémentaire si nécessaire
-            // Vérification des champs requis
             if (!req.body.nom || req.body.nom.trim() === '') {
                 errors.push({ msg: 'Le nom est requis' });
             }
@@ -57,11 +53,10 @@ class ClientController {
                 errors.push({ msg: 'Le téléphone est requis' });
             }
 
-            if (!req.body.adresse || req.body.adresse.trim() === '') {
-                errors.push({ msg: 'L\'adresse est requise' });
+            if (!req.body.nombre_personnes || req.body.nombre_personnes.trim() === '') {
+                errors.push({ msg: 'Le nombre de personnes est requis' });
             }
 
-            // Si des erreurs existent, retourner à la vue avec les erreurs
             if (errors.length > 0) {
                 return res.render('clients/create', {
                     title: 'Ajouter un Client',
@@ -101,23 +96,20 @@ class ClientController {
     // Traiter la mise à jour d'un client
     static async update(req, res) {
         try {
-            // Récupérer les erreurs de validation d'express-validator
             const validatorErrors = validationResult(req);
             const errors = [];
 
-            // Convertir les erreurs express-validator au format attendu
             if (!validatorErrors.isEmpty()) {
                 validatorErrors.array().forEach(error => {
                     errors.push({ msg: error.msg });
                 });
             }
 
-            // Si des erreurs existent, retourner à la vue avec les erreurs
             if (errors.length > 0) {
                 const client = await Client.findById(req.params.id);
                 return res.render('clients/edit', {
                     title: 'Modifier le Client',
-                    client: { ...client, ...req.body, id: req.params.id },
+                    client: { ...client, ...req.body, id_client: req.params.id },
                     errors: errors
                 });
             }

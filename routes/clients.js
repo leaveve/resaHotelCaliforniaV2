@@ -36,12 +36,11 @@ const clientValidation = [
         .matches(/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/)
         .withMessage('Le téléphone doit être un numéro français valide'),
     
-    body('adresse')
+    body('nombre_personnes')
         .notEmpty()
-        .withMessage('L\'adresse est obligatoire')
-        .isLength({ min: 5, max: 200 })
-        .withMessage('L\'adresse doit faire entre 5 et 200 caractères')
-        .trim()
+        .withMessage('Le nombre de personnes est obligatoire')
+        .isInt({ min: 1, max: 20 })
+        .withMessage('Le nombre de personnes doit être entre 1 et 20')
 ];
 
 router.get('/', ClientController.index);
