@@ -1,7 +1,27 @@
-const express = require('express');
+import express from 'express';
+import {
+    getReservations,
+    getReservationById,
+    createReservation,
+    updateReservation,
+    deleteReservation
+} from '../controllers/reservationsController.js';
+
 const router = express.Router();
-const reservationController = require('../controllers/reservationController');
 
-router.get('/', reservationController.getReservations);
+//  Récupérer toutes les réservations
+router.get('/', getReservations);
 
-module.exports = router;
+//  Récupérer une réservation par ID
+router.get('/:id', getReservationById);
+
+//  Créer une nouvelle réservation
+router.post('/', createReservation);
+
+//  Mettre à jour une réservation existante
+router.put('/:id', updateReservation);
+
+//  Supprimer une réservation
+router.delete('/:id', deleteReservation);
+
+export default router;
