@@ -1,26 +1,169 @@
+// controllers/clientController.js
+import { validationResult } from 'express-validator';
 import Client from '../models/Client.js';
 
-export const listClients = async (req, res) => {
-  const clients = await Client.findAll();
-  res.render('clients/index', { clients });
-};
+class ClientController {
+    // Afficher la liste des clients
+    static async index(req, res) {
+        try {
+            const clients = await Client.findAll();
+            res.render('clients/index', {
+                title: 'Gestion des Clients',
+                clients: clients
+            });
+        } catch (error) {
+            res.redirect('/');
+        }
+    }
 
-export const createClient = async (req, res) => {
-  await Client.create(req.body);
-  res.redirect('/clients');
-};
+    // Afficher le formulaire de création
+    static create(req, res) {
+        res.render('clients/create', {
+            title: 'Ajouter un Client',
+            client: {},
+            errors: []
+        });
+    }
 
-export const editClientForm = async (req, res) => {
-  const client = await Client.findById(req.params.id);
-  res.render('clients/edit', { client });
-};
+    // Traiter la création d'un client
+    static async store(req, res) {
+        try {
+            // Récupérer les erreurs de validation d'express-validator
+            const validatorErrors = validationResult(req);
+            const errors = [];
 
-export const updateClient = async (req, res) => {
-  await Client.update(req.params.id, req.body);
-  res.redirect('/clients');
-};
+            // Convertir les erreurs express-validator au format attendu
+            if (!validatorErrors.isEmpty()) {
+                validatorErrors.array().forEach(error => {
+                    errors.push({ msg: error.msg });
+                });
+            }
 
-export const deleteClient = async (req, res) => {
-  await Client.delete(req.params.id);
-  res.redirect('/clients');
-};
+            // Validation manuelle supplémentaire si nécessaire
+            // Vérification des champs requis
+            if (!req.body.nom || req.body.nom.trim() === '') {
+                errors.push({ msg: 'Le nom est requis' });
+            }
+
+            if (!req.body.prenom || req.body.prenom.trim() === '') {
+                errors.push({ msg: 'Le prénom est requis' });
+            }
+
+            if (!req.body.email || req.body.email.trim() === '') {
+                errors.push({ msg: 'L\'email est requis' });
+            }
+
+            if (!req.body.telephone || req.body.telephone.trim() === '') {
+                errors.push({ msg: 'Le téléphone est requis' });
+            }
+
+            if (!req.body.adresse || req.body.adresse.trim() === '') {
+                errors.push({ msg: 'L\'adresse est requise' });
+            }
+
+            // Si des erreurs existent, retourner à la vue avec les erreurs
+            if (errors.length > 0) {
+                return res.render('clients/create', {
+                    title: 'Ajouter un Client',
+                    client: req.body,
+                    errors: errors
+                });
+            }
+
+            await Client.create(req.body);
+            res.redirect('/clients');
+        } catch (error) {
+            res.render('clients/create', {
+                title: 'Ajouter un Client',
+                client: req.body,
+                errors: [{ msg: error.message }]
+            });
+        }
+    }
+
+    // Afficher le formulaire d'édition
+    static async edit(req, res) {
+        try {
+            const client = await Client.findById(req.params.id);
+            if (!client) {
+                return res.redirect('/clients');
+            }
+            res.render('clients/edit', {
+                title: 'Modifier le Client',
+                client: client,
+                errors: []
+            });
+        } catch (error) {
+            res.redirect('/clients');
+        }
+    }
+
+    // Traiter la mise à jour d'un client
+    static async update(req, res) {
+        try {
+            // Récupérer les erreurs de validation d'express-validator
+            const validatorErrors = validationResult(req);
+            const errors = [];
+
+            // Convertir les erreurs express-validator au format attendu
+            if (!validatorErrors.isEmpty()) {
+                validatorErrors.array().forEach(error => {
+                    errors.push({ msg: error.msg });
+                });
+            }
+
+            // Si des erreurs existent, retourner à la vue avec les erreurs
+            if (errors.length > 0) {
+                const client = await Client.findById(req.params.id);
+                return res.render('clients/edit', {
+                    title: 'Modifier le Client',
+                    client: { ...client, ...req.body, id: req.params.id },
+                    errors: errors
+                });
+            }
+
+            const unClient = await Client.findById(req.params.id);
+            if (unClient) {
+                await Client.update(req.params.id, req.body);
+            }
+            res.redirect('/clients');
+        } catch (error) {
+            res.redirect('/clients');
+        }
+    }
+
+    // Afficher la confirmation de suppression
+    static async delete(req, res) {
+        try {
+            const client = await Client.findById(req.params.id);
+            if (!client) {
+                return res.redirect('/clients');
+            }
+            res.render('clients/delete', {
+                title: 'Supprimer le Client',
+                client: client
+            });
+        } catch (error) {
+            res.redirect('/clients');
+        }
+    }
+
+    // Traiter la suppression d'un client
+    static async destroy(req, res) {
+        try {
+            const client = await Client.findById(req.params.id);
+            if (!client) {
+                return res.redirect('/clients');
+            }
+            await Client.delete(req.params.id);
+            res.redirect('/clients');
+        } catch (error) {
+            if (req.session) {
+                req.session.messages = [{ type: 'error', text: error.message }];
+            }
+            res.redirect('/clients');
+        }
+    }
+}
+
+export default ClientController;
