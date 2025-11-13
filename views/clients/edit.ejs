@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1>Modifier le client</h1>
+
+    <% if (errors && errors.length > 0) { %>
+        <ul style="color:red;">
+            <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <form action="/clients/<%= client.id_client %>/edit" method="POST">
+        <input type="text" name="nom" placeholder="Nom" value="<%= client.nom %>" required>
+        <input type="text" name="prenom" placeholder="Prénom" value="<%= client.prenom %>" required>
+        <input type="email" name="email" placeholder="Email" value="<%= client.email %>" required>
+        <input type="text" name="telephone" placeholder="Téléphone" value="<%= client.telephone %>" required>
+        <input type="number" name="nombre_personnes" placeholder="Nb personnes" value="<%= client.nombre_personnes %>" required>
+        <button type="submit">Modifier</button>
+        <a href="/clients">Annuler</a>
+    </form>
+</body>
+</html>

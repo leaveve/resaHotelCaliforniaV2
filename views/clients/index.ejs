@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des clients</h1>
+
+    <% if (messages) { %>
+        <ul>
+            <% messages.forEach(msg => { %>
+                <li style="color: <%= msg.type === 'error' ? 'red' : 'green' %>;"><%= msg.text %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Nb personnes</th>
+            <th>Actions</th>
+        </tr>
+        <% clients.forEach(client => { %>
+            <tr>
+                <td><%= client.nom %></td>
+                <td><%= client.prenom %></td>
+                <td><%= client.email %></td>
+                <td><%= client.telephone %></td>
+                <td><%= client.nombre_personnes %></td>
+                <td>
+                    <a href="/clients/<%= client.id_client %>/edit">Modifier</a> |
+                    <a href="/clients/<%= client.id_client %>/delete">Supprimer</a>
+                </td>
+            </tr>
+        <% }) %>
+    </table>
+
+    <h2>Ajouter un client</h2>
+    <% if (errors && errors.length > 0) { %>
+        <ul style="color:blue;">
+            <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <form action="/clients" method="POST">
+        <input type="text" name="nom" placeholder="Nom" value="<%= client ? client.nom : '' %>" required>
+        <input type="text" name="prenom" placeholder="Prénom" value="<%= client ? client.prenom : '' %>" required>
+        <input type="email" name="email" placeholder="Email" value="<%= client ? client.email : '' %>" required>
+        <input type="text" name="telephone" placeholder="Téléphone" value="<%= client ? client.telephone : '' %>" required>
+        <input type="number" name="nombre_personnes" placeholder="Nb personnes" value="<%= client ? client.nombre_personnes : '' %>" required>
+        <button type="submit">Ajouter</button>
+    </form>
+</body>
+</html>

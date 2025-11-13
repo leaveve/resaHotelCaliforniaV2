@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1>Ajouter un client</h1>
+
+    <% if (errors && errors.length > 0) { %>
+        <ul style="color:red;">
+            <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <form action="/clients" method="POST">
+        <input type="text" name="nom" placeholder="Nom" value="<%= client ? client.nom : '' %>" required>
+        <input type="text" name="prenom" placeholder="Prénom" value="<%= client ? client.prenom : '' %>" required>
+        <input type="email" name="email" placeholder="Email" value="<%= client ? client.email : '' %>" required>
+        <input type="text" name="telephone" placeholder="Téléphone" value="<%= client ? client.telephone : '' %>" required>
+        <input type="number" name="nombre_personnes" placeholder="Nb personnes" value="<%= client ? client.nombre_personnes : '' %>" required>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <a href="/clients">Retour à la liste</a>
+</body>
+</html>

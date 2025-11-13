@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1>Supprimer le client</h1>
+
+    <p>Êtes-vous sûr de vouloir supprimer le client : <strong><%= client.nom %> <%= client.prenom %></strong> ?</p>
+
+    <form action="/clients/<%= client.id_client %>/delete" method="POST">
+        <button type="submit">Supprimer</button>
+        <a href="/clients">Annuler</a>
+    </form>
+</body>
+</html>
