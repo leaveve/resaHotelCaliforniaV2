@@ -1,6 +1,4 @@
-// controllers/clientController.js
-import { validationResult } from 'express-validator';
-import Client from '../models/Client.js';
+import Client from '../models/Client';
 
 class ClientController {
     // Afficher la liste des clients
@@ -28,35 +26,28 @@ class ClientController {
     // Traiter la création d'un client
     static async store(req, res) {
         try {
-            const validatorErrors = validationResult(req);
+            // Validation manuelle des données
             const errors = [];
 
-            if (!validatorErrors.isEmpty()) {
-                validatorErrors.array().forEach(error => {
-                    errors.push({ msg: error.msg });
-                });
-            }
-
+            // Vérification des champs requis (Adapté pour un Client)
             if (!req.body.nom || req.body.nom.trim() === '') {
-                errors.push({ msg: 'Le nom est requis' });
+                errors.push({ msg: 'Le nom du client est requis' });
             }
 
             if (!req.body.prenom || req.body.prenom.trim() === '') {
-                errors.push({ msg: 'Le prénom est requis' });
+                errors.push({ msg: 'Le prénom du client est requis' });
             }
 
             if (!req.body.email || req.body.email.trim() === '') {
-                errors.push({ msg: 'L\'email est requis' });
+                errors.push({ msg: "L'email est requis" });
             }
+            
+            // Exemple de validation d'email simple si besoin
+            // if (req.body.email && !req.body.email.includes('@')) {
+            //    errors.push({ msg: "L'email n'est pas valide" });
+            // }
 
-            if (!req.body.telephone || req.body.telephone.trim() === '') {
-                errors.push({ msg: 'Le téléphone est requis' });
-            }
-
-            if (!req.body.nombre_personnes || req.body.nombre_personnes.trim() === '') {
-                errors.push({ msg: 'Le nombre de personnes est requis' });
-            }
-
+            // Si des erreurs existent, retourner à la vue avec les erreurs
             if (errors.length > 0) {
                 return res.render('clients/create', {
                     title: 'Ajouter un Client',
@@ -96,27 +87,9 @@ class ClientController {
     // Traiter la mise à jour d'un client
     static async update(req, res) {
         try {
-            const validatorErrors = validationResult(req);
-            const errors = [];
-
-            if (!validatorErrors.isEmpty()) {
-                validatorErrors.array().forEach(error => {
-                    errors.push({ msg: error.msg });
-                });
-            }
-
-            if (errors.length > 0) {
-                const client = await Client.findById(req.params.id);
-                return res.render('clients/edit', {
-                    title: 'Modifier le Client',
-                    client: { ...client, ...req.body, id_client: req.params.id },
-                    errors: errors
-                });
-            }
-
             const unClient = await Client.findById(req.params.id);
             if (unClient) {
-                await Client.update(req.params.id, req.body);
+                await Client.update(req.body);
             }
             res.redirect('/clients');
         } catch (error) {
@@ -147,15 +120,13 @@ class ClientController {
             if (!client) {
                 return res.redirect('/clients');
             }
-            await Client.delete(req.params.id);
+            await client.delete(req.params.id);
             res.redirect('/clients');
         } catch (error) {
-            if (req.session) {
-                req.session.messages = [{ type: 'error', text: error.message }];
-            }
+            req.session.messages = [{ type: 'error', text: error.message }];
             res.redirect('/clients');
         }
     }
 }
 
-export default ClientController;
+module.exports = ClientController;
