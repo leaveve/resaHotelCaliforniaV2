@@ -1,4 +1,6 @@
-import db from '../models/connexion.js'; // Connexion à ta base
+import db from '../models/connexion.js'; // Connexion à 0ta base
+import Reservation from './models/Reservation.js';
+
 
 // Fonction de formatage de date (comme PHP)
 function formatDate(date) {

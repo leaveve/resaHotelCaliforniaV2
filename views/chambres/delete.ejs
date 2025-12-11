@@ -1,0 +1,9 @@
+<h1>Supprimer la chambre</h1>
+
+<p>Voulez-vous vraiment supprimer la chambre n° <%= chambre.numero %> ?</p>
+
+<form action="/chambres/<%= chambre.id %>/delete" method="POST">
+    <button type="submit">Oui, supprimer</button>
+</form>
+
+<a href="/chambres">Annuler</a>

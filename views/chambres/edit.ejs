@@ -1,0 +1,14 @@
+<h1>Modifier la chambre</h1>
+
+<form action="/chambres/<%= chambre.id %>/edit" method="POST">
+    <label>Numéro :</label>
+    <input type="text" name="numero" value="<%= chambre.numero %>" required>
+
+    <label>Type :</label>
+    <input type="text" name="type" value="<%= chambre.type %>" required>
+
+    <label>Prix :</label>
+    <input type="number" name="prix" value="<%= chambre.prix %>" required>
+
+    <button type="submit">Sauvegarder</button>
+</form>
