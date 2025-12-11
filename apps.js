@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 // Récupérer le chemin local (file://...) et le répertoire courant (workspace/resaHotelCalifornia2)
@@ -13,6 +14,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+
+
+
 // Configuration du middleware avec exclusion
 app.use('/semantic-ui', express.static(
  path.join(__dirname, 'node_modules', 'semantic-ui-css'),
