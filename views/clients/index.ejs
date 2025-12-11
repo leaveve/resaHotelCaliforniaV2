@@ -3,37 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <title><%= title %></title>
+
+    <!-- Google Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        ul {
-            list-style-type: none;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6fa;
+            margin: 0;
             padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 32px;
+        }
+
+        /* Container */
+        .container {
+            width: 90%;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Add Client Button */
+        .add-btn {
+            display: inline-block;
+            background-color: #28a745;
+            padding: 10px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .add-btn i {
+            margin-right: 6px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background-color: #f0f3f5;
+        }
+
+        /* Action buttons */
+        .btn-action {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background-color: #f1c40f;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+
+        .btn-action i {
+            font-size: 14px;
+        }
+
+        /* Form */
+        form {
+            margin-top: 30px;
+        }
+
+        form input {
+            padding: 10px;
+            width: 180px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        form button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* Messages */
+        .msg-success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .msg-error {
+            color: red;
+            font-weight: bold;
         }
     </style>
 </head>
-<body>
-    <h1>Liste des clients</h1>
 
+<body>
+
+<h1>Liste des Clients</h1>
+
+<div class="container">
+
+    <!-- Messages -->
     <% if (messages) { %>
         <ul>
             <% messages.forEach(msg => { %>
-                <li style="color: <%= msg.type === 'error' ? 'red' : 'green' %>;"><%= msg.text %></li>
+                <li class="<%= msg.type === 'error' ? 'msg-error' : 'msg-success' %>">
+                    <%= msg.text %>
+                </li>
             <% }) %>
         </ul>
     <% } %>
 
+    <!-- Add Client button -->
+    <a href="/clients/new" class="add-btn">
+        <i class="fa fa-user-plus"></i> Ajouter un Client
+    </a>
+
+    <!-- Table Clients -->
     <table>
         <tr>
             <th>Nom</th>
@@ -43,6 +159,7 @@
             <th>Nb personnes</th>
             <th>Actions</th>
         </tr>
+
         <% clients.forEach(client => { %>
             <tr>
                 <td><%= client.nom %></td>
@@ -51,14 +168,20 @@
                 <td><%= client.telephone %></td>
                 <td><%= client.nombre_personnes %></td>
                 <td>
-                    <a href="/clients/<%= client.id_client %>/edit">Modifier</a> |
-                    <a href="/clients/<%= client.id_client %>/delete">Supprimer</a>
+                    <a href="/clients/<%= client.id_client %>/edit" class="btn-action btn-edit">
+                        <i class="fa fa-pen"></i>
+                    </a>
+                    <a href="/clients/<%= client.id_client %>/delete" class="btn-action btn-delete">
+                        <i class="fa fa-trash"></i>
+                    </a>
                 </td>
             </tr>
         <% }) %>
     </table>
 
+    <!-- Add Form -->
     <h2>Ajouter un client</h2>
+
     <% if (errors && errors.length > 0) { %>
         <ul style="color:blue;">
             <% errors.forEach(error => { %>
@@ -68,12 +191,15 @@
     <% } %>
 
     <form action="/clients" method="POST">
-        <input type="text" name="nom" placeholder="Nom" value="<%= client ? client.nom : '' %>" required>
-        <input type="text" name="prenom" placeholder="Prénom" value="<%= client ? client.prenom : '' %>" required>
-        <input type="email" name="email" placeholder="Email" value="<%= client ? client.email : '' %>" required>
-        <input type="text" name="telephone" placeholder="Téléphone" value="<%= client ? client.telephone : '' %>" required>
-        <input type="number" name="nombre_personnes" placeholder="Nb personnes" value="<%= client ? client.nombre_personnes : '' %>" required>
+        <input type="text" name="nom" placeholder="Nom" required>
+        <input type="text" name="prenom" placeholder="Prénom" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="telephone" placeholder="Téléphone" required>
+        <input type="number" name="nombre_personnes" placeholder="Nb pers." required>
         <button type="submit">Ajouter</button>
     </form>
+
+</div>
+
 </body>
 </html>

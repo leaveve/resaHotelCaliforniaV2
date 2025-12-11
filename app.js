@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import chambresRoutes from "./routes/chambres.js";
+import authRoutes from './routes/auth.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,11 +17,15 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Route ACCUEIL
-app.get("/", (req, res) => {
-    res.render("accueil", {
-        title: "Hôtel California - Système de Gestion"
+// Configuration du middleware avec exclusion
+app.use('/semantic-ui', express.static(
+ path.join(__dirname, 'node_modules', 'semantic-ui-css'),
+ { fallthrough: true }
+));
+// Route principale
+app.get('/', (req, res) => {
+    res.render('accueil', {
+        title: 'Hôtel California - Système de Gestion'
     });
 });
 

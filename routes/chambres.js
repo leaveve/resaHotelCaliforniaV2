@@ -1,56 +1,21 @@
 import express from "express";
 const router = express.Router();
-
-// LISTE DES CHAMBRES
-router.get("/", (req, res) => {
-    const chambres = [
-        { id: 1, numero: 101, type: "Simple", prix: 50 },
-        { id: 2, numero: 102, type: "Double", prix: 75 },
-    ];
-
-    res.render("chambres/index", { chambres });
-});
-
-// PAGE AJOUTER UNE CHAMBRE
-router.get("/create", (req, res) => {
-    res.render("chambres/create");
-});
-
-// TRAITEMENT AJOUT
-router.post("/", (req, res) => {
-    res.redirect("/chambres");
-});
-
-// PAGE EDIT
-router.get("/:id/edit", (req, res) => {
-    const chambre = {
-        id: req.params.id,
-        numero: 101,
-        type: "Simple",
-        prix: 50
-    };
-
-    res.render("chambres/edit", { chambre });
-});
-
-// TRAITEMENT EDIT
-router.post("/:id/edit", (req, res) => {
-    res.redirect("/chambres");
-});
-
-// PAGE DELETE
-router.get("/:id/delete", (req, res) => {
-    const chambre = {
-        id: req.params.id,
-        numero: 101
-    };
-
-    res.render("chambres/delete", { chambre });
-});
-
-// TRAITEMENT DELETE
-router.post("/:id/delete", (req, res) => {
-    res.redirect("/chambres");
-});
-
-export default router;
+// Validation des données de chambre
+const chambreValidation = [
+ body('numero')
+ .notEmpty()
+ .withMessage('Le numéro de chambre est obligatoire')
+ .isLength({ min: 1, max: 10 })
+ .withMessage('Le numéro doit faire entre 1 et 10 caractères'),
+ body('capacite')
+ .isInt({ min: 1, max: 50 })
+ .withMessage('La capacité doit être un nombre entre 1 et 50')
+];
+router.get('/', ChambreController.index);
+router.get('/create', ChambreController.create);
+router.post('/', chambreValidation, ChambreController.store);
+router.get('/:id/edit', ChambreController.edit);
+router.put('/:id', chambreValidation, ChambreController.update);
+router.get('/:id/delete', ChambreController.delete);
+router.delete('/:id', ChambreController.destroy);
+module.exports = router;
