@@ -1,5 +1,5 @@
 import db from '../models/connexion.js'; // Connexion à 0ta base
-import Reservation from './models/Reservation.js';
+import Reservation from './models/reservation.js';
 
 
 // Fonction de formatage de date (comme PHP)
