@@ -1,0 +1,33 @@
+<h1>Liste des chambres</h1>
+
+<a href="/chambres/create">Ajouter une chambre</a>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Numéro</th>
+        <th>Type</th>
+        <th>Prix</th>
+        <th>Actions</th>
+    </tr>
+    <% chambres.forEach(c=> { %>
+        <tr>
+            <td>
+                <%= c.id %>
+            </td>
+            <td>
+                <%= c.numero %>
+            </td>
+            <td>
+                <%= c.type %>
+            </td>
+            <td>
+                <%= c.prix %> €
+            </td>
+            <td>
+                <a href="/chambres/<%= c.id %>/edit">Modifier</a>
+                <a href="/chambres/<%= c.id %>/delete">Supprimer</a>
+            </td>
+        </tr>
+        <% }) %>
+</table>
