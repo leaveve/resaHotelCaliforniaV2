@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import authRoutes from './routes/auth.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,9 @@ app.use('/semantic-ui', express.static(
  path.join(__dirname, 'node_modules', 'semantic-ui-css'),
  { fallthrough: true }
 ));
+// Routes Login
+app.use('/', authRoutes);
+
 // Route principale
 app.get('/', (req, res) => {
     res.render('accueil', {
